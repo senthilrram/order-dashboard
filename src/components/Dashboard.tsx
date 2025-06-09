@@ -5,7 +5,20 @@ import { OrderListView } from './OrderListView';
 import { OrderDetailView } from './OrderDetailView';
 import { orderSections } from '../data/mockData';
 import type { Order, OrderSubcategory } from '../types/order';
-import { CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { 
+  CheckCircle2, 
+  Clock, 
+  AlertTriangle, 
+  ChevronRight,
+  FileSearch,
+  Target,
+  Search,
+  Settings,
+  Package,
+  Wrench,
+  TestTube,
+  Shield
+} from 'lucide-react';
 
 type ViewType = 'dashboard' | 'orderList' | 'orderDetail';
 type TabType = 'on-track' | 'delayed' | 'stuck';
@@ -130,6 +143,170 @@ export const Dashboard: React.FC = () => {
       );
     }
 
+    // Special sequential layout for "On Track" tab
+    if (activeTab === 'on-track') {
+      const onTrackSubcategories = tabSections[0]?.subcategories || [];
+      
+      return (
+        <div className="space-y-6">
+          {/* Sequential Flow Title */}
+          <div className="text-center py-4">
+            <h2 
+              className="text-xl font-bold mb-2"
+              style={{ 
+                color: '#073b4c',
+                fontFamily: 'Arial, sans-serif'
+              }}
+            >
+              Order Processing Workflow
+            </h2>
+            <p 
+              className="text-sm"
+              style={{ 
+                color: '#6B7280',
+                fontFamily: 'Arial, sans-serif'
+              }}
+            >
+              Sequential flow from validation to service completion
+            </p>
+          </div>
+
+          {/* Desktop Sequential Flow - Single Row */}
+          <div className="hidden lg:block bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="flex items-center justify-between gap-1 overflow-x-auto">
+              {onTrackSubcategories.map((subcategory, index) => {
+                // Define stage-specific icons and colors
+                const stageConfig = [
+                  { icon: FileSearch, color: '#3B82F6', bgColor: '#EFF6FF' }, // Blue
+                  { icon: Target, color: '#8B5CF6', bgColor: '#F5F3FF' },      // Purple
+                  { icon: Search, color: '#10B981', bgColor: '#ECFDF5' },      // Emerald
+                  { icon: Settings, color: '#F59E0B', bgColor: '#FFFBEB' },   // Amber
+                  { icon: Package, color: '#EF4444', bgColor: '#FEF2F2' },    // Red
+                  { icon: Wrench, color: '#06B6D4', bgColor: '#F0F9FF' },     // Cyan
+                  { icon: TestTube, color: '#84CC16', bgColor: '#F7FEE7' },   // Lime
+                  { icon: Shield, color: '#059669', bgColor: '#ECFDF5' }      // Green
+                ][index] || { icon: CheckCircle2, color: '#6B7280', bgColor: '#F9FAFB' };
+
+                const IconComponent = stageConfig.icon;
+
+                return (
+                  <React.Fragment key={subcategory.name}>
+                    <div className="flex-shrink-0" style={{ minWidth: '160px', maxWidth: '160px' }}>
+                      <div 
+                        className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:shadow-lg transition-all duration-200 h-28 hover:scale-105"
+                        style={{ backgroundColor: stageConfig.bgColor }}
+                        onClick={() => handleCardClick(subcategory, tabSections[0].title)}
+                      >
+                        {/* Mini Card Header */}
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <IconComponent 
+                              className="w-4 h-4" 
+                              style={{ color: stageConfig.color }}
+                            />
+                            <div 
+                              className="w-2 h-2 rounded-full"
+                              style={{ backgroundColor: stageConfig.color }}
+                            ></div>
+                          </div>
+                          <span 
+                            className="text-xs font-bold px-2 py-1 rounded-full"
+                            style={{
+                              backgroundColor: stageConfig.color,
+                              color: '#FFFFFF'
+                            }}
+                          >
+                            {subcategory.count}
+                          </span>
+                        </div>
+                        {/* Mini Card Title */}
+                        <h3 
+                          className="text-xs font-bold leading-tight mb-1"
+                          style={{ 
+                            color: stageConfig.color,
+                            fontFamily: 'Arial, sans-serif'
+                          }}
+                        >
+                          {subcategory.name}
+                        </h3>
+                        {/* Mini Card Description */}
+                        <p 
+                          className="text-xs"
+                          style={{ 
+                            color: '#6B7280',
+                            fontFamily: 'Arial, sans-serif'
+                          }}
+                        >
+                          Click to view details
+                        </p>
+                      </div>
+                    </div>
+                    {index < onTrackSubcategories.length - 1 && (
+                      <div className="flex-shrink-0 flex items-center justify-center px-1">
+                        <ChevronRight 
+                          className="h-6 w-6" 
+                          style={{ color: '#073b4c' }}
+                        />
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Mobile/Tablet Vertical Flow */}
+          <div className="lg:hidden space-y-4">
+            {onTrackSubcategories.map((subcategory, index) => (
+              <React.Fragment key={subcategory.name}>
+                <div className="w-full">
+                  <OrderCard
+                    subcategory={subcategory}
+                    onCardClick={(sub) => handleCardClick(sub, tabSections[0].title)}
+                    sectionTitle={tabSections[0].title}
+                  />
+                </div>
+                {index < onTrackSubcategories.length - 1 && (
+                  <div className="flex justify-center py-2">
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-1 h-8"
+                        style={{ backgroundColor: '#073b4c' }}
+                      ></div>
+                      <ChevronRight 
+                        className="h-6 w-6 transform rotate-90" 
+                        style={{ color: '#073b4c' }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Flow Legend */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center gap-3">
+              <div 
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: '#073b4c' }}
+              ></div>
+              <p 
+                className="text-sm font-medium"
+                style={{ 
+                  color: '#073b4c',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                Sequential Workflow: Orders progress through each stage in sequence from left to right
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Regular grid layout for other tabs
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {tabSections[0]?.subcategories.map((subcategory) => (
