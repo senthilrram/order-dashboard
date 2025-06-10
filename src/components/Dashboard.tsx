@@ -3,6 +3,7 @@ import { Navbar } from './Navbar';
 import { OrderCard } from './OrderCard';
 import { OrderListView } from './OrderListView';
 import { OrderDetailView } from './OrderDetailView';
+import { TaskDetailView } from './TaskDetailView';
 import { orderSections } from '../data/mockData';
 import type { Order, OrderSubcategory } from '../types/order';
 import { 
@@ -20,7 +21,7 @@ import {
   Shield
 } from 'lucide-react';
 
-type ViewType = 'dashboard' | 'orderList' | 'orderDetail';
+type ViewType = 'dashboard' | 'orderList' | 'orderDetail' | 'taskDetail';
 type TabType = 'on-track' | 'delayed' | 'stuck';
 
 interface ViewState {
@@ -29,6 +30,10 @@ interface ViewState {
     subcategory?: OrderSubcategory;
     order?: Order;
     sectionTitle?: string;
+    fromOrderList?: {
+      subcategory: OrderSubcategory;
+      sectionTitle: string;
+    };
   };
 }
 
@@ -80,8 +85,38 @@ export const Dashboard: React.FC = () => {
   const handleOrderClick = (order: Order) => {
     setViewState({
       type: 'orderDetail',
-      data: { order }
+      data: { 
+        order,
+        fromOrderList: viewState.data?.subcategory && viewState.data?.sectionTitle ? {
+          subcategory: viewState.data.subcategory,
+          sectionTitle: viewState.data.sectionTitle
+        } : undefined
+      }
     });
+  };
+
+  const handleTaskClick = (order: Order) => {
+    setViewState({
+      type: 'taskDetail',
+      data: { 
+        order,
+        fromOrderList: viewState.data?.fromOrderList
+      }
+    });
+  };
+
+  const handleBackFromTaskToOrder = () => {
+    if (viewState.data?.order) {
+      setViewState({
+        type: 'orderDetail',
+        data: { 
+          order: viewState.data.order,
+          fromOrderList: viewState.data?.fromOrderList
+        }
+      });
+    } else {
+      handleBackToOrderList();
+    }
   };
 
   const handleBackToDashboard = () => {
@@ -89,7 +124,15 @@ export const Dashboard: React.FC = () => {
   };
 
   const handleBackToOrderList = () => {
-    if (viewState.data?.subcategory && viewState.data?.sectionTitle) {
+    if (viewState.data?.fromOrderList) {
+      setViewState({
+        type: 'orderList',
+        data: { 
+          subcategory: viewState.data.fromOrderList.subcategory, 
+          sectionTitle: viewState.data.fromOrderList.sectionTitle 
+        }
+      });
+    } else if (viewState.data?.subcategory && viewState.data?.sectionTitle) {
       setViewState({
         type: 'orderList',
         data: { 
@@ -171,83 +214,99 @@ export const Dashboard: React.FC = () => {
             </p>
           </div>
 
-          {/* Desktop Sequential Flow - 2x4 Grid Layout */}
+          {/* Desktop Sequential Flow - Single Row Layout */}
           <div className="hidden md:block bg-white rounded-lg border border-gray-200 p-4 sm:p-6 shadow-sm">
             <div className="space-y-6">
-              {/* First Row - Left to Right */}
-              <div className="flex items-center justify-between gap-4">
-                {onTrackSubcategories.slice(0, 4).map((subcategory, index) => {
-                  // Define stage-specific icons and colors
-                  const stageConfig = [
+              {/* Single Row - All 8 phases */}
+              <div className="flex items-center justify-between gap-2 overflow-x-auto">
+                {onTrackSubcategories.map((subcategory, index) => {
+                  // Define stage-specific icons and colors for all 8 phases
+                  const stageConfigs = [
                     { icon: FileSearch, color: '#3B82F6', bgColor: '#EFF6FF' }, // Blue
                     { icon: Target, color: '#8B5CF6', bgColor: '#F5F3FF' },      // Purple
                     { icon: Search, color: '#10B981', bgColor: '#ECFDF5' },      // Emerald
                     { icon: Settings, color: '#F59E0B', bgColor: '#FFFBEB' },   // Amber
-                  ][index] || { icon: CheckCircle2, color: '#6B7280', bgColor: '#F9FAFB' };
+                    { icon: Package, color: '#EF4444', bgColor: '#FEF2F2' },    // Red
+                    { icon: Wrench, color: '#06B6D4', bgColor: '#F0F9FF' },     // Cyan
+                    { icon: TestTube, color: '#84CC16', bgColor: '#F7FEE7' },   // Lime
+                    { icon: Shield, color: '#059669', bgColor: '#ECFDF5' }      // Green
+                  ];
+
+                  const stageConfig = stageConfigs[index] || { icon: CheckCircle2, color: '#6B7280', bgColor: '#F9FAFB' };
+
+                  // Map long names to short names for all phases
+                  const shortNames = [
+                    'Validation',
+                    'Triage', 
+                    'Survey',
+                    'Service Planning',
+                    'JobPack Planning',
+                    'Build',
+                    'Fit & Test',
+                    'Prove Service'
+                  ];
 
                   const IconComponent = stageConfig.icon;
 
                   return (
                     <React.Fragment key={subcategory.name}>
-                      <div className="flex-1" style={{ minWidth: '200px', maxWidth: '240px' }}>
+                      <div className="flex-1" style={{ minWidth: '140px', maxWidth: '160px' }}>
                         <div 
-                          className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-lg transition-all duration-200 h-36 hover:scale-105"
+                          className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:shadow-lg transition-all duration-200 h-44 hover:scale-105 flex flex-col"
                           style={{ backgroundColor: stageConfig.bgColor }}
                           onClick={() => handleCardClick(subcategory, tabSections[0].title)}
                         >
-                          {/* Card Header */}
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <IconComponent 
-                                className="w-5 h-5" 
-                                style={{ color: stageConfig.color }}
-                              />
-                              <div 
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: stageConfig.color }}
-                              ></div>
-                            </div>
-                            <span 
-                              className="text-sm font-bold px-3 py-1 rounded-full"
-                              style={{
-                                backgroundColor: stageConfig.color,
-                                color: '#FFFFFF'
-                              }}
+                          {/* Large Order Count - Most Prominent */}
+                          <div className="text-center mb-4">
+                            <div 
+                              className="text-4xl font-bold mb-1"
+                              style={{ color: stageConfig.color }}
                             >
                               {subcategory.count}
-                            </span>
+                            </div>
+                            <div 
+                              className="text-xs font-medium"
+                              style={{ color: '#6B7280' }}
+                            >
+                              Orders
+                            </div>
                           </div>
-                          {/* Card Title */}
-                          <h3 
-                            className="text-sm font-bold leading-tight mb-2"
-                            style={{ 
-                              color: stageConfig.color,
-                              fontFamily: 'Arial, sans-serif'
-                            }}
-                          >
-                            {subcategory.name}
-                          </h3>
-                          {/* Card Description */}
-                          <p 
-                            className="text-xs"
-                            style={{ 
-                              color: '#6B7280',
-                              fontFamily: 'Arial, sans-serif'
-                            }}
-                          >
-                            Click to view details
-                          </p>
+                          
+                          {/* Icon and Phase Name */}
+                          <div className="flex flex-col items-center text-center flex-1">
+                            <IconComponent 
+                              className="w-6 h-6 mb-2" 
+                              style={{ color: stageConfig.color }}
+                            />
+                            <h3 
+                              className="text-sm font-bold leading-tight"
+                              style={{ 
+                                color: stageConfig.color,
+                                fontFamily: 'Arial, sans-serif'
+                              }}
+                            >
+                              {shortNames[index] || subcategory.name}
+                            </h3>
+                          </div>
+                          
+                          {/* Status Indicator */}
+                          <div className="mt-auto pt-2 text-center">
+                            <div 
+                              className="w-3 h-3 rounded-full mx-auto"
+                              style={{ backgroundColor: stageConfig.color }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                      {index < 3 && (
-                        <div className="flex items-center justify-center px-3">
+                      {index < onTrackSubcategories.length - 1 && (
+                        <div className="flex items-center justify-center px-1">
                           {/* Bold Custom Arrow: -----> */}
                           <div className="flex items-center" style={{ color: '#073b4c' }}>
                             <div className="flex items-center">
-                              {[...Array(6)].map((_, i) => (
+                              {[...Array(3)].map((_, i) => (
                                 <div
                                   key={i}
-                                  className="w-1.5 h-1 mx-0.5"
+                                  className="w-1 h-1 mx-0.5"
                                   style={{ backgroundColor: '#073b4c' }}
                                 />
                               ))}
@@ -256,135 +315,11 @@ export const Dashboard: React.FC = () => {
                               <div 
                                 className="w-0 h-0"
                                 style={{
-                                  borderLeft: '10px solid #073b4c',
-                                  borderTop: '6px solid transparent',
-                                  borderBottom: '6px solid transparent'
+                                  borderLeft: '12px solid #073b4c',
+                                  borderTop: '8px solid transparent',
+                                  borderBottom: '8px solid transparent'
                                 }}
                               />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-
-              {/* Connecting Arrow from Right to Down */}
-              <div className="flex justify-end pr-20">
-                <div className="flex flex-col items-center">
-                  {/* Bold Custom Vertical Arrow */}
-                  <div className="flex flex-col items-center" style={{ color: '#073b4c' }}>
-                    <div className="flex flex-col items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="w-1 h-1.5 my-0.5"
-                          style={{ backgroundColor: '#073b4c' }}
-                        />
-                      ))}
-                    </div>
-                    <div className="mt-1">
-                      <div 
-                        className="w-0 h-0"
-                        style={{
-                          borderTop: '10px solid #073b4c',
-                          borderLeft: '6px solid transparent',
-                          borderRight: '6px solid transparent'
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Second Row - Right to Left */}
-              <div className="flex items-center justify-between gap-4 flex-row-reverse">
-                {onTrackSubcategories.slice(4, 8).map((subcategory, index) => {
-                  // Define stage-specific icons and colors for second row
-                  const stageConfig = [
-                    { icon: Package, color: '#EF4444', bgColor: '#FEF2F2' },    // Red
-                    { icon: Wrench, color: '#06B6D4', bgColor: '#F0F9FF' },     // Cyan
-                    { icon: TestTube, color: '#84CC16', bgColor: '#F7FEE7' },   // Lime
-                    { icon: Shield, color: '#059669', bgColor: '#ECFDF5' }      // Green
-                  ][index] || { icon: CheckCircle2, color: '#6B7280', bgColor: '#F9FAFB' };
-
-                  const IconComponent = stageConfig.icon;
-
-                  return (
-                    <React.Fragment key={subcategory.name}>
-                      <div className="flex-1" style={{ minWidth: '200px', maxWidth: '240px' }}>
-                        <div 
-                          className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-lg transition-all duration-200 h-36 hover:scale-105"
-                          style={{ backgroundColor: stageConfig.bgColor }}
-                          onClick={() => handleCardClick(subcategory, tabSections[0].title)}
-                        >
-                          {/* Card Header */}
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <IconComponent 
-                                className="w-5 h-5" 
-                                style={{ color: stageConfig.color }}
-                              />
-                              <div 
-                                className="w-2 h-2 rounded-full"
-                                style={{ backgroundColor: stageConfig.color }}
-                              ></div>
-                            </div>
-                            <span 
-                              className="text-sm font-bold px-3 py-1 rounded-full"
-                              style={{
-                                backgroundColor: stageConfig.color,
-                                color: '#FFFFFF'
-                              }}
-                            >
-                              {subcategory.count}
-                            </span>
-                          </div>
-                          {/* Card Title */}
-                          <h3 
-                            className="text-sm font-bold leading-tight mb-2"
-                            style={{ 
-                              color: stageConfig.color,
-                              fontFamily: 'Arial, sans-serif'
-                            }}
-                          >
-                            {subcategory.name}
-                          </h3>
-                          {/* Card Description */}
-                          <p 
-                            className="text-xs"
-                            style={{ 
-                              color: '#6B7280',
-                              fontFamily: 'Arial, sans-serif'
-                            }}
-                          >
-                            Click to view details
-                          </p>
-                        </div>
-                      </div>
-                      {index < 3 && (
-                        <div className="flex items-center justify-center px-3">
-                          {/* Bold Custom Left Arrow: <----- */}
-                          <div className="flex items-center" style={{ color: '#073b4c' }}>
-                            <div className="mr-1">
-                              <div 
-                                className="w-0 h-0"
-                                style={{
-                                  borderRight: '10px solid #073b4c',
-                                  borderTop: '6px solid transparent',
-                                  borderBottom: '6px solid transparent'
-                                }}
-                              />
-                            </div>
-                            <div className="flex items-center">
-                              {[...Array(6)].map((_, i) => (
-                                <div
-                                  key={i}
-                                  className="w-1.5 h-1 mx-0.5"
-                                  style={{ backgroundColor: '#073b4c' }}
-                                />
-                              ))}
                             </div>
                           </div>
                         </div>
@@ -532,6 +467,17 @@ export const Dashboard: React.FC = () => {
             <OrderDetailView
               order={viewState.data.order}
               onBack={handleBackToOrderList}
+              onTaskClick={handleTaskClick}
+            />
+          );
+        }
+        break;
+      case 'taskDetail':
+        if (viewState.data?.order) {
+          return (
+            <TaskDetailView
+              order={viewState.data.order}
+              onBack={handleBackFromTaskToOrder}
             />
           );
         }

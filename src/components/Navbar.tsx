@@ -26,7 +26,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onSearch, onLogout }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left side - Logo/Title */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
+            {/* OpenReach Logo */}
+            <div 
+              className="w-12 h-8 sm:w-16 sm:h-10 bg-white rounded-lg flex items-center justify-center shadow-sm p-1"
+              style={{ backgroundColor: '#ffffff' }}
+            >
+              <img 
+                src="/openreach-logo.jpeg" 
+                alt="OpenReach Logo" 
+                className="w-full h-full object-contain rounded"
+              />
+            </div>
+            
             <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-white" style={{ fontFamily: 'Arial, sans-serif' }}>
               <span className="hidden sm:inline">Order Dashboard</span>
               <span className="sm:hidden">Orders</span>

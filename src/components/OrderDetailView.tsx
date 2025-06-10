@@ -27,9 +27,10 @@ import {
 interface OrderDetailViewProps {
   order: Order;
   onBack: () => void;
+  onTaskClick?: (order: Order) => void;
 }
 
-export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ order, onBack }) => {
+export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ order, onBack, onTaskClick }) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -197,6 +198,48 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({ order, onBack 
                 <strong>Current Task:</strong> {order.currentTask}
               </span>
             </div>
+          </div>
+        </div>
+
+        {/* Current Task Section */}
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-4">
+          <h3 
+            className="text-lg font-semibold mb-4"
+            style={{ 
+              color: '#073b4c',
+              fontFamily: 'Arial, sans-serif'
+            }}
+          >
+            Current Task
+          </h3>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <Target className="h-5 w-5 text-blue-500" />
+                <span 
+                  className="font-medium text-gray-900"
+                  style={{ fontFamily: 'Arial, sans-serif' }}
+                >
+                  {order.currentTask}
+                </span>
+              </div>
+              <p 
+                className="text-sm text-gray-600"
+                style={{ fontFamily: 'Arial, sans-serif' }}
+              >
+                Click "Open Task" to view detailed task information and perform actions
+              </p>
+            </div>
+            {onTaskClick && (
+              <button
+                onClick={() => onTaskClick(order)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                style={{ fontFamily: 'Arial, sans-serif' }}
+              >
+                <Settings className="h-4 w-4" />
+                Open Task
+              </button>
+            )}
           </div>
         </div>
 

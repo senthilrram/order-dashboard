@@ -41,7 +41,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ subcategory, onCardClick, 
       'OR Delayed Orders': 'OR Delayed',
       'Product Support Group': 'Product Support',
       'Application Support Group': 'Application Support',
-      'Functional Fallout': 'Functional Fallout'
+      'Functional Fallout': 'Business Fallout'
     };
     return nameMap[fullName] || fullName;
   };
@@ -183,7 +183,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ subcategory, onCardClick, 
           accentColor: '#B91C1C',
           ringColor: 'rgba(185, 28, 28, 0.2)'
         };
-      case 'Functional Fallout':
+      case 'Business Fallout':
         return {
           bgClass: 'bg-white border-l-4',
           borderStyle: { borderLeftColor: '#7C2D12' }, // Red-800
