@@ -27,22 +27,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onSearch, onLogout }) => {
         <div className="flex justify-between items-center h-16">
           {/* Left side - Logo/Title */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold tracking-tight text-white" style={{ fontFamily: 'Arial, sans-serif' }}>
-              Order Dashboard
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-white" style={{ fontFamily: 'Arial, sans-serif' }}>
+              <span className="hidden sm:inline">Order Dashboard</span>
+              <span className="sm:hidden">Orders</span>
             </h1>
           </div>
 
           {/* Center - Search */}
-          <div className="flex-1 max-w-xl mx-8">
+          <div className="flex-1 max-w-xl mx-2 sm:mx-4 md:mx-8">
             <form onSubmit={handleSearchSubmit} className="relative">
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-300" />
+                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 sm:h-5 sm:w-5 text-gray-300" />
                 </div>
                 <input
                   type="text"
-                  placeholder="Search orders, customers, or tasks..."
-                  className="block w-full pl-12 pr-4 py-2.5 border-2 rounded-md leading-5 bg-white placeholder-gray-500 text-gray-900 transition-all duration-200 font-normal"
+                  placeholder="Search orders..."
+                  className="block w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-2.5 border-2 rounded-md leading-5 bg-white placeholder-gray-500 text-gray-900 transition-all duration-200 font-normal text-sm sm:text-base"
                   style={{ 
                     borderColor: '#0a4d5c',
                     fontFamily: 'Arial, sans-serif'
@@ -63,37 +64,37 @@ export const Navbar: React.FC<NavbarProps> = ({ onSearch, onLogout }) => {
           </div>
 
           {/* Right side - Actions */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
             {/* Notifications */}
             <Button
               variant="ghost"
               size="icon"
-              className="relative transition-all duration-200 h-10 w-10 text-white hover:bg-white/10"
+              className="relative transition-all duration-200 h-8 w-8 sm:h-10 sm:w-10 text-white hover:bg-white/10"
             >
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full animate-pulse" style={{ backgroundColor: '#FF6B35' }}></span>
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full animate-pulse" style={{ backgroundColor: '#FF6B35' }}></span>
             </Button>
 
             {/* User Profile */}
             <Button
               variant="ghost"
               size="icon"
-              className="transition-all duration-200 h-10 w-10 text-white hover:bg-white/10"
+              className="transition-all duration-200 h-8 w-8 sm:h-10 sm:w-10 text-white hover:bg-white/10"
             >
-              <User className="h-5 w-5" />
+              <User className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
 
             {/* Logout */}
             <Button
               onClick={onLogout}
               variant="ghost"
-              className="flex items-center gap-2 px-4 py-2 transition-all duration-200 font-medium text-white hover:bg-white/10"
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 transition-all duration-200 font-medium text-white hover:bg-white/10"
               style={{ 
                 fontFamily: 'Arial, sans-serif'
               }}
             >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:block">Logout</span>
+              <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:block text-xs sm:text-sm">Logout</span>
             </Button>
           </div>
         </div>

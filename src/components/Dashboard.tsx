@@ -150,9 +150,9 @@ export const Dashboard: React.FC = () => {
       return (
         <div className="space-y-6">
           {/* Sequential Flow Title */}
-          <div className="text-center py-4">
+          <div className="text-center py-3 sm:py-4">
             <h2 
-              className="text-xl font-bold mb-2"
+              className="text-lg sm:text-xl font-bold mb-2"
               style={{ 
                 color: '#073b4c',
                 fontFamily: 'Arial, sans-serif'
@@ -161,7 +161,7 @@ export const Dashboard: React.FC = () => {
               Order Processing Workflow
             </h2>
             <p 
-              className="text-sm"
+              className="text-xs sm:text-sm px-2"
               style={{ 
                 color: '#6B7280',
                 fontFamily: 'Arial, sans-serif'
@@ -171,92 +171,233 @@ export const Dashboard: React.FC = () => {
             </p>
           </div>
 
-          {/* Desktop Sequential Flow - Single Row */}
-          <div className="hidden lg:block bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-            <div className="flex items-center justify-between gap-1 overflow-x-auto">
-              {onTrackSubcategories.map((subcategory, index) => {
-                // Define stage-specific icons and colors
-                const stageConfig = [
-                  { icon: FileSearch, color: '#3B82F6', bgColor: '#EFF6FF' }, // Blue
-                  { icon: Target, color: '#8B5CF6', bgColor: '#F5F3FF' },      // Purple
-                  { icon: Search, color: '#10B981', bgColor: '#ECFDF5' },      // Emerald
-                  { icon: Settings, color: '#F59E0B', bgColor: '#FFFBEB' },   // Amber
-                  { icon: Package, color: '#EF4444', bgColor: '#FEF2F2' },    // Red
-                  { icon: Wrench, color: '#06B6D4', bgColor: '#F0F9FF' },     // Cyan
-                  { icon: TestTube, color: '#84CC16', bgColor: '#F7FEE7' },   // Lime
-                  { icon: Shield, color: '#059669', bgColor: '#ECFDF5' }      // Green
-                ][index] || { icon: CheckCircle2, color: '#6B7280', bgColor: '#F9FAFB' };
+          {/* Desktop Sequential Flow - 2x4 Grid Layout */}
+          <div className="hidden md:block bg-white rounded-lg border border-gray-200 p-4 sm:p-6 shadow-sm">
+            <div className="space-y-6">
+              {/* First Row - Left to Right */}
+              <div className="flex items-center justify-between gap-4">
+                {onTrackSubcategories.slice(0, 4).map((subcategory, index) => {
+                  // Define stage-specific icons and colors
+                  const stageConfig = [
+                    { icon: FileSearch, color: '#3B82F6', bgColor: '#EFF6FF' }, // Blue
+                    { icon: Target, color: '#8B5CF6', bgColor: '#F5F3FF' },      // Purple
+                    { icon: Search, color: '#10B981', bgColor: '#ECFDF5' },      // Emerald
+                    { icon: Settings, color: '#F59E0B', bgColor: '#FFFBEB' },   // Amber
+                  ][index] || { icon: CheckCircle2, color: '#6B7280', bgColor: '#F9FAFB' };
 
-                const IconComponent = stageConfig.icon;
+                  const IconComponent = stageConfig.icon;
 
-                return (
-                  <React.Fragment key={subcategory.name}>
-                    <div className="flex-shrink-0" style={{ minWidth: '160px', maxWidth: '160px' }}>
-                      <div 
-                        className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:shadow-lg transition-all duration-200 h-28 hover:scale-105"
-                        style={{ backgroundColor: stageConfig.bgColor }}
-                        onClick={() => handleCardClick(subcategory, tabSections[0].title)}
-                      >
-                        {/* Mini Card Header */}
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <IconComponent 
-                              className="w-4 h-4" 
-                              style={{ color: stageConfig.color }}
-                            />
-                            <div 
-                              className="w-2 h-2 rounded-full"
-                              style={{ backgroundColor: stageConfig.color }}
-                            ></div>
+                  return (
+                    <React.Fragment key={subcategory.name}>
+                      <div className="flex-1" style={{ minWidth: '200px', maxWidth: '240px' }}>
+                        <div 
+                          className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-lg transition-all duration-200 h-36 hover:scale-105"
+                          style={{ backgroundColor: stageConfig.bgColor }}
+                          onClick={() => handleCardClick(subcategory, tabSections[0].title)}
+                        >
+                          {/* Card Header */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <IconComponent 
+                                className="w-5 h-5" 
+                                style={{ color: stageConfig.color }}
+                              />
+                              <div 
+                                className="w-2 h-2 rounded-full"
+                                style={{ backgroundColor: stageConfig.color }}
+                              ></div>
+                            </div>
+                            <span 
+                              className="text-sm font-bold px-3 py-1 rounded-full"
+                              style={{
+                                backgroundColor: stageConfig.color,
+                                color: '#FFFFFF'
+                              }}
+                            >
+                              {subcategory.count}
+                            </span>
                           </div>
-                          <span 
-                            className="text-xs font-bold px-2 py-1 rounded-full"
-                            style={{
-                              backgroundColor: stageConfig.color,
-                              color: '#FFFFFF'
+                          {/* Card Title */}
+                          <h3 
+                            className="text-sm font-bold leading-tight mb-2"
+                            style={{ 
+                              color: stageConfig.color,
+                              fontFamily: 'Arial, sans-serif'
                             }}
                           >
-                            {subcategory.count}
-                          </span>
+                            {subcategory.name}
+                          </h3>
+                          {/* Card Description */}
+                          <p 
+                            className="text-xs"
+                            style={{ 
+                              color: '#6B7280',
+                              fontFamily: 'Arial, sans-serif'
+                            }}
+                          >
+                            Click to view details
+                          </p>
                         </div>
-                        {/* Mini Card Title */}
-                        <h3 
-                          className="text-xs font-bold leading-tight mb-1"
-                          style={{ 
-                            color: stageConfig.color,
-                            fontFamily: 'Arial, sans-serif'
-                          }}
-                        >
-                          {subcategory.name}
-                        </h3>
-                        {/* Mini Card Description */}
-                        <p 
-                          className="text-xs"
-                          style={{ 
-                            color: '#6B7280',
-                            fontFamily: 'Arial, sans-serif'
-                          }}
-                        >
-                          Click to view details
-                        </p>
                       </div>
-                    </div>
-                    {index < onTrackSubcategories.length - 1 && (
-                      <div className="flex-shrink-0 flex items-center justify-center px-1">
-                        <ChevronRight 
-                          className="h-6 w-6" 
-                          style={{ color: '#073b4c' }}
+                      {index < 3 && (
+                        <div className="flex items-center justify-center px-3">
+                          {/* Bold Custom Arrow: -----> */}
+                          <div className="flex items-center" style={{ color: '#073b4c' }}>
+                            <div className="flex items-center">
+                              {[...Array(6)].map((_, i) => (
+                                <div
+                                  key={i}
+                                  className="w-1.5 h-1 mx-0.5"
+                                  style={{ backgroundColor: '#073b4c' }}
+                                />
+                              ))}
+                            </div>
+                            <div className="ml-1">
+                              <div 
+                                className="w-0 h-0"
+                                style={{
+                                  borderLeft: '10px solid #073b4c',
+                                  borderTop: '6px solid transparent',
+                                  borderBottom: '6px solid transparent'
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+
+              {/* Connecting Arrow from Right to Down */}
+              <div className="flex justify-end pr-20">
+                <div className="flex flex-col items-center">
+                  {/* Bold Custom Vertical Arrow */}
+                  <div className="flex flex-col items-center" style={{ color: '#073b4c' }}>
+                    <div className="flex flex-col items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-1 h-1.5 my-0.5"
+                          style={{ backgroundColor: '#073b4c' }}
                         />
+                      ))}
+                    </div>
+                    <div className="mt-1">
+                      <div 
+                        className="w-0 h-0"
+                        style={{
+                          borderTop: '10px solid #073b4c',
+                          borderLeft: '6px solid transparent',
+                          borderRight: '6px solid transparent'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Second Row - Right to Left */}
+              <div className="flex items-center justify-between gap-4 flex-row-reverse">
+                {onTrackSubcategories.slice(4, 8).map((subcategory, index) => {
+                  // Define stage-specific icons and colors for second row
+                  const stageConfig = [
+                    { icon: Package, color: '#EF4444', bgColor: '#FEF2F2' },    // Red
+                    { icon: Wrench, color: '#06B6D4', bgColor: '#F0F9FF' },     // Cyan
+                    { icon: TestTube, color: '#84CC16', bgColor: '#F7FEE7' },   // Lime
+                    { icon: Shield, color: '#059669', bgColor: '#ECFDF5' }      // Green
+                  ][index] || { icon: CheckCircle2, color: '#6B7280', bgColor: '#F9FAFB' };
+
+                  const IconComponent = stageConfig.icon;
+
+                  return (
+                    <React.Fragment key={subcategory.name}>
+                      <div className="flex-1" style={{ minWidth: '200px', maxWidth: '240px' }}>
+                        <div 
+                          className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-lg transition-all duration-200 h-36 hover:scale-105"
+                          style={{ backgroundColor: stageConfig.bgColor }}
+                          onClick={() => handleCardClick(subcategory, tabSections[0].title)}
+                        >
+                          {/* Card Header */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <IconComponent 
+                                className="w-5 h-5" 
+                                style={{ color: stageConfig.color }}
+                              />
+                              <div 
+                                className="w-2 h-2 rounded-full"
+                                style={{ backgroundColor: stageConfig.color }}
+                              ></div>
+                            </div>
+                            <span 
+                              className="text-sm font-bold px-3 py-1 rounded-full"
+                              style={{
+                                backgroundColor: stageConfig.color,
+                                color: '#FFFFFF'
+                              }}
+                            >
+                              {subcategory.count}
+                            </span>
+                          </div>
+                          {/* Card Title */}
+                          <h3 
+                            className="text-sm font-bold leading-tight mb-2"
+                            style={{ 
+                              color: stageConfig.color,
+                              fontFamily: 'Arial, sans-serif'
+                            }}
+                          >
+                            {subcategory.name}
+                          </h3>
+                          {/* Card Description */}
+                          <p 
+                            className="text-xs"
+                            style={{ 
+                              color: '#6B7280',
+                              fontFamily: 'Arial, sans-serif'
+                            }}
+                          >
+                            Click to view details
+                          </p>
+                        </div>
                       </div>
-                    )}
-                  </React.Fragment>
-                );
-              })}
+                      {index < 3 && (
+                        <div className="flex items-center justify-center px-3">
+                          {/* Bold Custom Left Arrow: <----- */}
+                          <div className="flex items-center" style={{ color: '#073b4c' }}>
+                            <div className="mr-1">
+                              <div 
+                                className="w-0 h-0"
+                                style={{
+                                  borderRight: '10px solid #073b4c',
+                                  borderTop: '6px solid transparent',
+                                  borderBottom: '6px solid transparent'
+                                }}
+                              />
+                            </div>
+                            <div className="flex items-center">
+                              {[...Array(6)].map((_, i) => (
+                                <div
+                                  key={i}
+                                  className="w-1.5 h-1 mx-0.5"
+                                  style={{ backgroundColor: '#073b4c' }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {/* Mobile/Tablet Vertical Flow */}
-          <div className="lg:hidden space-y-4">
+          <div className="md:hidden space-y-3 sm:space-y-4">
             {onTrackSubcategories.map((subcategory, index) => (
               <React.Fragment key={subcategory.name}>
                 <div className="w-full">
@@ -285,14 +426,14 @@ export const Dashboard: React.FC = () => {
           </div>
 
           {/* Flow Legend */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center gap-3">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div 
-                className="w-3 h-3 rounded-full"
+                className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
                 style={{ backgroundColor: '#073b4c' }}
               ></div>
               <p 
-                className="text-sm font-medium"
+                className="text-xs sm:text-sm font-medium"
                 style={{ 
                   color: '#073b4c',
                   fontFamily: 'Arial, sans-serif'
@@ -310,11 +451,11 @@ export const Dashboard: React.FC = () => {
     return (
       <div className="space-y-6">
         {/* Section-specific heading */}
-        <div className="text-center py-4">
+        <div className="text-center py-3 sm:py-4">
           {activeTab === 'delayed' && (
             <>
               <h2 
-                className="text-xl font-bold mb-2"
+                className="text-lg sm:text-xl font-bold mb-2"
                 style={{ 
                   color: '#073b4c',
                   fontFamily: 'Arial, sans-serif'
@@ -323,7 +464,7 @@ export const Dashboard: React.FC = () => {
                 Order Delay Management
               </h2>
               <p 
-                className="text-sm"
+                className="text-xs sm:text-sm px-2"
                 style={{ 
                   color: '#6B7280',
                   fontFamily: 'Arial, sans-serif'
@@ -336,7 +477,7 @@ export const Dashboard: React.FC = () => {
           {activeTab === 'stuck' && (
             <>
               <h2 
-                className="text-xl font-bold mb-2"
+                className="text-lg sm:text-xl font-bold mb-2"
                 style={{ 
                   color: '#073b4c',
                   fontFamily: 'Arial, sans-serif'
@@ -345,7 +486,7 @@ export const Dashboard: React.FC = () => {
                 Order Recovery Center
               </h2>
               <p 
-                className="text-sm"
+                className="text-xs sm:text-sm px-2"
                 style={{ 
                   color: '#6B7280',
                   fontFamily: 'Arial, sans-serif'
@@ -357,7 +498,7 @@ export const Dashboard: React.FC = () => {
           )}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {tabSections[0]?.subcategories.map((subcategory) => (
             <OrderCard
               key={subcategory.name}
@@ -399,9 +540,9 @@ export const Dashboard: React.FC = () => {
         return (
           <div className="space-y-8">
             {/* Dashboard Overview */}
-            <div className="text-center py-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+            <div className="text-center py-4 sm:py-6 bg-white rounded-lg border border-gray-200 shadow-sm">
               <h1 
-                className="text-2xl font-bold mb-2"
+                className="text-xl sm:text-2xl font-bold mb-2"
                 style={{ 
                   color: '#073b4c',
                   fontFamily: 'Arial, sans-serif'
@@ -410,7 +551,7 @@ export const Dashboard: React.FC = () => {
                 Order Management Dashboard
               </h1>
               <p 
-                className="text-lg font-normal"
+                className="text-sm sm:text-lg font-normal px-2"
                 style={{ 
                   color: '#6B7280',
                   fontFamily: 'Arial, sans-serif'
@@ -445,8 +586,8 @@ export const Dashboard: React.FC = () => {
             )}
 
             {/* Tabs */}
-            <div className="bg-white border-b border-gray-200">
-              <nav className="-mb-px flex space-x-8">
+            <div className="bg-white border-b border-gray-200 overflow-x-auto">
+              <nav className="-mb-px flex space-x-4 sm:space-x-8 min-w-max sm:min-w-0">
                 {[
                   { 
                     id: 'on-track', 
@@ -470,7 +611,7 @@ export const Dashboard: React.FC = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as TabType)}
-                    className={`py-4 px-1 border-b-2 font-bold text-sm transition-colors flex items-center gap-2 ${
+                    className={`py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-bold text-xs sm:text-sm transition-colors flex items-center gap-1 sm:gap-2 whitespace-nowrap ${
                       activeTab === tab.id
                         ? 'border-current'
                         : 'border-transparent hover:border-gray-300'
@@ -481,10 +622,16 @@ export const Dashboard: React.FC = () => {
                       fontFamily: 'Arial, sans-serif'
                     }}
                   >
-                    {tab.label}
+                    <tab.icon 
+                      className="h-3 w-3 sm:h-4 sm:w-4" 
+                      style={{ 
+                        color: activeTab === tab.id ? '#073b4c' : '#6B7280' 
+                      }} 
+                    />
+                    <span className="hidden xs:inline sm:inline">{tab.label}</span>
                     {tab.count > 0 && (
                       <span 
-                        className="ml-1 px-2 py-1 text-xs rounded-full"
+                        className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs rounded-full"
                         style={{
                           backgroundColor: activeTab === tab.id ? '#073b4c' : '#E5E7EB',
                           color: activeTab === tab.id ? '#FFFFFF' : '#6B7280'
@@ -493,12 +640,6 @@ export const Dashboard: React.FC = () => {
                         {tab.count}
                       </span>
                     )}
-                    <tab.icon 
-                      className="h-4 w-4" 
-                      style={{ 
-                        color: activeTab === tab.id ? '#073b4c' : '#6B7280' 
-                      }} 
-                    />
                   </button>
                 ))}
               </nav>
@@ -516,7 +657,7 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar onSearch={handleSearch} onLogout={handleLogout} />
-      <main className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 py-4">
+      <main className="max-w-full mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
         {renderContent()}
       </main>
     </div>
