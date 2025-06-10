@@ -306,17 +306,67 @@ export const Dashboard: React.FC = () => {
       );
     }
 
-    // Regular grid layout for other tabs
+    // Regular grid layout for other tabs with descriptive headings
     return (
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {tabSections[0]?.subcategories.map((subcategory) => (
-          <OrderCard
-            key={subcategory.name}
-            subcategory={subcategory}
-            onCardClick={(sub) => handleCardClick(sub, tabSections[0].title)}
-            sectionTitle={tabSections[0].title}
-          />
-        ))}
+      <div className="space-y-6">
+        {/* Section-specific heading */}
+        <div className="text-center py-4">
+          {activeTab === 'delayed' && (
+            <>
+              <h2 
+                className="text-xl font-bold mb-2"
+                style={{ 
+                  color: '#073b4c',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                Order Delay Management
+              </h2>
+              <p 
+                className="text-sm"
+                style={{ 
+                  color: '#6B7280',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                Monitoring and resolving orders experiencing delays
+              </p>
+            </>
+          )}
+          {activeTab === 'stuck' && (
+            <>
+              <h2 
+                className="text-xl font-bold mb-2"
+                style={{ 
+                  color: '#073b4c',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                Order Recovery Center
+              </h2>
+              <p 
+                className="text-sm"
+                style={{ 
+                  color: '#6B7280',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                Critical intervention required for stuck orders
+              </p>
+            </>
+          )}
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {tabSections[0]?.subcategories.map((subcategory) => (
+            <OrderCard
+              key={subcategory.name}
+              subcategory={subcategory}
+              onCardClick={(sub) => handleCardClick(sub, tabSections[0].title)}
+              sectionTitle={tabSections[0].title}
+            />
+          ))}
+        </div>
       </div>
     );
   };
